@@ -23,18 +23,18 @@
         <td>{{ item.price | currency }}</td>
         <td>{{ item.price * item.quantity | currency }}</td>
         <td>
-          <button (click)="incrementQuantity(item.id)">+</button>
-          <button (click)="decrementQuantity(item.id)">-</button>
-          <button (click)="removeItem(item.id)">Remove</button>
+          <button class="qty-btn" (click)="incrementQuantity(item.id)">+</button>
+          <button class="qty-btn" (click)="decrementQuantity(item.id)">-</button>
+          <button class="remove-btn" (click)="removeItem(item.id)">Remove</button>
         </td>
       </tr>
     </tbody>
   </table>
 
-  <div *ngIf="items.length > 0">
+  <div *ngIf="items.length > 0" class="cart-total">
     <h3>Total: {{ total$ | async | currency }}</h3>
     <button (click)="clearCart()">Clear Cart</button>
-    <button (click)="proceedToCheckout()">Checkout</button>
-    <button (click)="proceedToProducts()">Continue Shopping</button>
+    <button class="checkout-btn" (click)="proceedToCheckout()">Checkout</button>
+    <button class="continue-btn" (click)="proceedToProducts()">Continue Shopping</button>
   </div>
 </div>

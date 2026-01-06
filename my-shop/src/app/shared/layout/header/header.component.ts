@@ -22,7 +22,7 @@ export class HeaderComponent implements OnInit {
     this.cartCount$ = this.store.select(
       createSelector(
         (state: { cart: CartState }) => state.cart.items,
-        items => items.reduce((sum, i) => sum + i.quantity, 0)
+        items => items.reduce((sum, i) => sum + (i.quantity ?? 0), 0)
       )
     );
 

@@ -3,8 +3,8 @@ import { Store, createSelector } from '@ngrx/store';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { Product } from 'src/app/entities/product.model';
-import { CartState } from './state/cart.reducer';
-import * as CartActions from './state/cart.actions';
+import { CartState } from '../state/cart.reducer';
+import * as CartActions from '../state/cart.actions';
 
 @Component({
   selector: 'app-cart',

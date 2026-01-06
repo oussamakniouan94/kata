@@ -10,7 +10,6 @@
             <div class="mini-cart">
                 <h4>Cart Preview</h4>
 
-                <!-- Safely unwrap items$ -->
                 <ng-container *ngIf="(items$ | async) as items">
                     <div *ngIf="items.length === 0">Your cart is empty.</div>
 
