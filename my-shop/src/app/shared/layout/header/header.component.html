@@ -1,0 +1,33 @@
+<header class="app-header">
+    <h1 class="logo">My Shop</h1>
+    <nav>
+        <a routerLink="/products" routerLinkActive="active">Products</a>
+
+        <div class="cart-container">
+            <a routerLink="/cart" routerLinkActive="active">
+                Cart <span class="badge">{{ cartCount }}</span>
+            </a>
+            <div class="mini-cart">
+                <h4>Cart Preview</h4>
+                <div *ngIf="items.length === 0">Your cart is empty.</div>
+                <ul *ngIf="items.length > 0">
+                    <li *ngFor="let item of items">
+                        <img [src]="item.image" alt="{{ item.title }}" width="40">
+                        aaaa
+                        <div class="item-info">
+                            <strong>{{ item.title }}</strong>
+                            <span>{{ item.quantity }} × {{ item.price | currency }}</span>
+                        </div>
+                    </li>
+                </ul>
+                <div class="mini-total">
+                    <span>Subtotal:</span>
+                    <strong>{{ subtotal | currency }}</strong>
+                </div>
+                <a routerLink="/cart" class="view-cart-btn">View Cart</a>
+            </div>
+        </div>
+
+        <a routerLink="/checkout" routerLinkActive="active">Checkout</a>
+    </nav>
+</header>
