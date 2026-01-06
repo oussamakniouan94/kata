@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ProductsService } from './product.service';
-import { CartService } from '../cart/cart.service';
 import { ToastrService } from 'ngx-toastr';
+import { Product } from 'src/app/entities/product.model';
+import { Store } from '@ngrx/store';
+import * as CartActions from '../cart/state/cart.actions';
 
 @Component({
   selector: 'app-plp',
@@ -13,24 +15,18 @@ export class PlpComponent implements OnInit {
 
   constructor(
     private productService: ProductsService,
-    private cartService: CartService,
-    private toastr: ToastrService
-  ) {}
+    private toastr: ToastrService,
+    private store: Store,
+  ) { }
 
   ngOnInit(): void {
     this.productService.getProducts().subscribe(data => {
       this.products = data;
     });
   }
-
-  addToCart(product: any): void {
-    this.cartService.add({
-      id: product.id,
-      title: product.title,
-      price: product.price,
-      quantity: 1,
-      image: product.image,
-    });
-    this.toastr.success('Your item has been added to the successfully!', 'Order Confirmed');
+  
+  addToCart(product: Product): void {
+    this.store.dispatch(CartActions.addItemOptimistic({ product: { ...product, quantity: 1 } }));
+    this.toastr.success('Item added to cart successfully!', 'Cart Updated');
   }
 }
