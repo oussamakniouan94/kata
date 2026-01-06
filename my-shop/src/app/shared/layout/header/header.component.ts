@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { CartService } from '../../../features/cart/cart.service';
+import { Store, createSelector } from '@ngrx/store';
+import { Observable } from 'rxjs';
 import { Product } from 'src/app/entities/product.model';
+import { CartState } from '../../../features/cart/state/cart.reducer';
 
 @Component({
   selector: 'app-header',
@@ -8,21 +10,27 @@ import { Product } from 'src/app/entities/product.model';
   styleUrls: ['./header.component.scss']
 })
 export class HeaderComponent implements OnInit {
-  cartCount = 0;
-  items: Product[] = [];
-  subtotal = 0;
+  cartCount$!: Observable<number>;
+  items$!: Observable<Product[]>;
+  subtotal$!: Observable<number>;
 
-  constructor(private cartService: CartService) { }
+  constructor(private store: Store<{ cart: CartState }>) { }
 
   ngOnInit(): void {
-    this.cartService.cartCount$.subscribe(count => {
-      this.cartCount = count;
-      this.items = this.cartService.getItems();
-      this.updateSubtotal();
-    });
-  }
+    this.items$ = this.store.select(state => state.cart.items);
 
-  private updateSubtotal(): void {
-    this.subtotal = this.items.reduce((sum, i) => sum + i.price * i.quantity, 0);
+    this.cartCount$ = this.store.select(
+      createSelector(
+        (state: { cart: CartState }) => state.cart.items,
+        items => items.reduce((sum, i) => sum + i.quantity, 0)
+      )
+    );
+
+    this.subtotal$ = this.store.select(
+      createSelector(
+        (state: { cart: CartState }) => state.cart.items,
+        items => items.reduce((sum, i) => sum + i.price * i.quantity, 0)
+      )
+    );
   }
 }

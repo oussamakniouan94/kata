@@ -1,7 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { CartService } from './cart.service';
+import { Store, createSelector } from '@ngrx/store';
 import { Router } from '@angular/router';
+import { Observable } from 'rxjs';
 import { Product } from 'src/app/entities/product.model';
+import { CartState } from './state/cart.reducer';
+import * as CartActions from './state/cart.actions';
 
 @Component({
   selector: 'app-cart',
@@ -9,38 +12,38 @@ import { Product } from 'src/app/entities/product.model';
   styleUrls: ['./cart.component.scss']
 })
 export class CartComponent implements OnInit {
-  items: Product[] = [];
-  total = 0;
+  items$!: Observable<Product[]>;
+  total$!: Observable<number>;
 
-  constructor(private cartService: CartService, private router: Router) { }
+  constructor(private store: Store<{ cart: CartState }>, private router: Router) {}
 
   ngOnInit(): void {
-    this.refreshCart();
-  }
+    // Select cart items
+    this.items$ = this.store.select(state => state.cart.items);
 
-  refreshCart(): void {
-    this.items = this.cartService.getItems();
-    this.total = this.items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+    // Compute total
+    this.total$ = this.store.select(
+      createSelector(
+        (state: { cart: CartState }) => state.cart.items,
+        items => items.reduce((sum, item) => sum + item.price * item.quantity, 0)
+      )
+    );
   }
 
   incrementQuantity(id: number): void {
-    this.cartService.updateQuantity(id, 1);
-    this.refreshCart();
+    this.store.dispatch(CartActions.updateQtyOptimistic({ id, delta: 1 }));
   }
 
   decrementQuantity(id: number): void {
-    this.cartService.updateQuantity(id, -1);
-    this.refreshCart();
+    this.store.dispatch(CartActions.updateQtyOptimistic({ id, delta: -1 }));
   }
 
   removeItem(id: number): void {
-    this.cartService.remove(id);
-    this.refreshCart();
+    this.store.dispatch(CartActions.removeItemOptimistic({ id }));
   }
 
   clearCart(): void {
-    this.cartService.clear();
-    this.refreshCart();
+    this.store.dispatch(CartActions.clearCart());
   }
 
   proceedToCheckout(): void {

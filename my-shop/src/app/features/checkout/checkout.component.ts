@@ -1,8 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { CartService } from '../cart/cart.service';
+import { Store, createSelector } from '@ngrx/store';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
+import { Observable } from 'rxjs';
 import { Product } from 'src/app/entities/product.model';
+import { CartState } from '../cart/state/cart.reducer';
+import * as CartActions from '../cart/state/cart.actions';
 
 @Component({
   selector: 'app-checkout',
@@ -10,8 +13,8 @@ import { Product } from 'src/app/entities/product.model';
   styleUrls: ['./checkout.component.scss']
 })
 export class CheckoutComponent implements OnInit {
-  items: Product[] = [];
-  total = 0;
+  items$!: Observable<Product[]>;
+  total$!: Observable<number>;
 
   shipping = {
     name: '',
@@ -22,20 +25,25 @@ export class CheckoutComponent implements OnInit {
   };
 
   constructor(
-    private cartService: CartService,
+    private store: Store<{ cart: CartState }>,
     private router: Router,
     private toastr: ToastrService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
-    this.items = this.cartService.getItems();
-    this.total = this.items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+    this.items$ = this.store.select(state => state.cart.items);
+
+    this.total$ = this.store.select(
+      createSelector(
+        (state: { cart: CartState }) => state.cart.items,
+        items => items.reduce((sum, item) => sum + item.price * item.quantity, 0)
+      )
+    );
   }
 
   placeOrder(): void {
     this.toastr.success('Your order has been placed successfully!', 'Order Confirmed');
-
-    this.cartService.clear();
+    this.store.dispatch(CartActions.clearCart());
     this.router.navigate(['/order-confirmation']);
   }
 }

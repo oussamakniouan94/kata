@@ -1,29 +1,31 @@
 <h2>Checkout</h2>
 
-<div *ngIf="items.length === 0">
-  <p>Your cart is empty. Go back to Products to add items.</p>
-</div>
+<ng-container *ngIf="(items$ | async) as items">
+  <div *ngIf="items.length === 0">
+    <p>Your cart is empty. Go back to Products to add items.</p>
+  </div>
 
-<div *ngIf="items.length > 0" class="checkout-summary">
-  <table class="checkout-table">
-    <thead>
-      <tr>
-        <th>Product</th>
-        <th>Quantity</th>
-        <th>Price</th>
-        <th>Subtotal</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let item of items">
-        <td>{{ item.title }}</td>
-        <td>{{ item.quantity }}</td>
-        <td>{{ item.price | currency }}</td>
-        <td>{{ item.price * item.quantity | currency }}</td>
-      </tr>
-    </tbody>
-  </table>
+  <div *ngIf="items.length > 0" class="checkout-summary">
+    <table class="checkout-table">
+      <thead>
+        <tr>
+          <th>Product</th>
+          <th>Quantity</th>
+          <th>Price</th>
+          <th>Subtotal</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of items">
+          <td>{{ item.title }}</td>
+          <td>{{ item.quantity }}</td>
+          <td>{{ item.price | currency }}</td>
+          <td>{{ item.price * item.quantity | currency }}</td>
+        </tr>
+      </tbody>
+    </table>
 
-  <h3>Total: {{ total | currency }}</h3>
-  <button (click)="placeOrder()">Place Order</button>
-</div>
+    <h3>Total: {{ total$ | async | currency }}</h3>
+    <button (click)="placeOrder()">Place Order</button>
+  </div>
+</ng-container>

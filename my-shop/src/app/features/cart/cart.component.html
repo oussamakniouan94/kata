@@ -1,41 +1,40 @@
-<h2>Your Cart</h2>
+<div *ngIf="items$ | async as items">
+  <h2>Your Cart</h2>
 
-<div *ngIf="items.length === 0">
-  <p>Your cart is empty.</p>
-</div>
+  <div *ngIf="items.length === 0">Your cart is empty.</div>
 
-<table *ngIf="items.length > 0" class="cart-table">
-  <thead>
-    <tr>
-      <th>Image</th>
-      <th>Product</th>
-      <th>Price</th>
-      <th>Quantity</th>
-      <th>Subtotal</th>
-      <th>Action</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let item of items">
-      <td><img [src]="item.image" alt="{{ item.title }}" width="50"></td>
-      <td>{{ item.title }}</td>
-      <td>{{ item.price | currency }}</td>
-      <td>
-        <button (click)="decrementQuantity(item.id)" class="qty-btn">-</button>
-        {{ item.quantity }}
-        <button (click)="incrementQuantity(item.id)" class="qty-btn">+</button>
-      </td>
-      <td>{{ item.price * item.quantity | currency }}</td>
-      <td>
-        <button (click)="removeItem(item.id)" class="remove-btn">Remove</button>
-      </td>
-    </tr>
-  </tbody>
-</table>
+  <table *ngIf="items.length > 0" class="cart-table">
+    <thead>
+      <tr>
+        <th>Product</th>
+        <th>Quantity</th>
+        <th>Price</th>
+        <th>Subtotal</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of items">
+        <td>
+          <img [src]="item.image" alt="{{ item.title }}" width="50">
+          {{ item.title }}
+        </td>
+        <td>{{ item.quantity }}</td>
+        <td>{{ item.price | currency }}</td>
+        <td>{{ item.price * item.quantity | currency }}</td>
+        <td>
+          <button (click)="incrementQuantity(item.id)">+</button>
+          <button (click)="decrementQuantity(item.id)">-</button>
+          <button (click)="removeItem(item.id)">Remove</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
 
-<div *ngIf="items.length > 0">
-  <h3>Total: {{ total | currency }}</h3>
-  <button (click)="clearCart()">Clear Cart</button>
-  <button (click)="proceedToCheckout()" class="checkout-btn">Proceed to Checkout</button>
-  <button (click)="proceedToProducts()" class="continue-btn">Continue Shopping</button>
+  <div *ngIf="items.length > 0">
+    <h3>Total: {{ total$ | async | currency }}</h3>
+    <button (click)="clearCart()">Clear Cart</button>
+    <button (click)="proceedToCheckout()">Checkout</button>
+    <button (click)="proceedToProducts()">Continue Shopping</button>
+  </div>
 </div>

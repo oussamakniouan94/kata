@@ -5,24 +5,29 @@
 
         <div class="cart-container">
             <a routerLink="/cart" routerLinkActive="active">
-                Cart <span class="badge">{{ cartCount }}</span>
+                Cart <span class="badge">{{ cartCount$ | async }}</span>
             </a>
             <div class="mini-cart">
                 <h4>Cart Preview</h4>
-                <div *ngIf="items.length === 0">Your cart is empty.</div>
-                <ul *ngIf="items.length > 0">
-                    <li *ngFor="let item of items">
-                        <img [src]="item.image" alt="{{ item.title }}" width="40">
-                        aaaa
-                        <div class="item-info">
-                            <strong>{{ item.title }}</strong>
-                            <span>{{ item.quantity }} × {{ item.price | currency }}</span>
-                        </div>
-                    </li>
-                </ul>
+
+                <!-- Safely unwrap items$ -->
+                <ng-container *ngIf="(items$ | async) as items">
+                    <div *ngIf="items.length === 0">Your cart is empty.</div>
+
+                    <ul *ngIf="items.length > 0">
+                        <li *ngFor="let item of items">
+                            <img [src]="item.image" alt="{{ item.title }}" width="40">
+                            <div class="item-info">
+                                <strong>{{ item.title }}</strong>
+                                <span>{{ item.quantity }} × {{ item.price | currency }}</span>
+                            </div>
+                        </li>
+                    </ul>
+                </ng-container>
+
                 <div class="mini-total">
                     <span>Subtotal:</span>
-                    <strong>{{ subtotal | currency }}</strong>
+                    <strong>{{ subtotal$ | async | currency }}</strong>
                 </div>
                 <a routerLink="/cart" class="view-cart-btn">View Cart</a>
             </div>

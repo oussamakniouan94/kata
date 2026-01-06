@@ -1,16 +1,19 @@
 import { Injectable } from '@angular/core';
 import { CanActivate, Router } from '@angular/router';
-import { CartService } from '../cart/cart.service';
+import { Store } from '@ngrx/store';
+import { CartState } from '../cart/state/cart.reducer';
+import { firstValueFrom } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CheckoutGuard implements CanActivate {
-  constructor(private cartService: CartService, private router: Router) {}
+  constructor(private store: Store<{ cart: CartState }>, private router: Router) { }
 
-  canActivate(): boolean {
-    const items = this.cartService.getItems();
-    if (items.length === 0) {
+  async canActivate(): Promise<boolean> {
+    const items = await firstValueFrom(this.store.select(state => state.cart.items));
+
+    if (!items || items.length === 0) {
       this.router.navigate(['/products']);
       return false;
     }
