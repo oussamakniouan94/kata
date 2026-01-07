@@ -9,6 +9,7 @@ import { PlpComponent } from './component/plp.component';
 import { productsReducer } from './state/products.reducer';
 import { ProductsEffects } from './state/products.effects';
 import { ToastrModule } from 'ngx-toastr';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [PlpComponent],
@@ -18,7 +19,8 @@ import { ToastrModule } from 'ngx-toastr';
     StoreModule.forFeature('products', productsReducer),
     EffectsModule.forFeature([ProductsEffects]),
     ToastrModule,
-    ScrollingModule
+    ScrollingModule,
+    ReactiveFormsModule
   ],
 })
 export class PlpModule {}

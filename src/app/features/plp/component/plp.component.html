@@ -1,34 +1,27 @@
 <h2 class="page-title">Products</h2>
 
+<input type="text" [formControl]="searchControl" placeholder="Search products..." class="search-input" />
+
 <div *ngIf="loading$ | async" class="state">Loading...</div>
 <div *ngIf="error$ | async as error" class="state error">
   Error: {{ error }}
 </div>
 
-<cdk-virtual-scroll-viewport class="viewport" itemSize="460" *ngIf="products$ | async as products">
-  <div class="product-row" *cdkVirtualFor="let row of chunkProducts(products, columns)">
+<cdk-virtual-scroll-viewport class="viewport" itemSize="460" *ngIf="filteredRows$ | async as rows">
+  <div class="product-row" *cdkVirtualFor="let row of rows">
     <div class="product-card" *ngFor="let product of row">
       <img [src]="product.image" [alt]="product.title" />
-
       <h3>{{ product.title }}</h3>
-
-      <p class="price">
-        {{ product.price | currency }}
-      </p>
+      <p class="price">{{ product.price | currency }}</p>
 
       <div class="rating">
         <ng-container *ngFor="let star of [1,2,3,4,5]">
           <span class="star" [class.filled]="star <= product.rating.rate">★</span>
         </ng-container>
-
-        <span class="rating-value">
-          {{ product.rating.rate }} / 5 ({{ product.rating.count }})
-        </span>
+        <span class="rating-value">{{ product.rating.rate }} / 5 ({{ product.rating.count }})</span>
       </div>
 
-      <button (click)="addToCart(product)">
-        Add to Cart
-      </button>
+      <button (click)="addToCart(product)">Add to Cart</button>
     </div>
   </div>
 </cdk-virtual-scroll-viewport>
