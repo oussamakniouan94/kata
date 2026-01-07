@@ -1,0 +1,41 @@
+<div *ngIf="items$ | async as items">
+  <h2>Checkout</h2>
+
+  <div *ngIf="items.length === 0">Your cart is empty.</div>
+
+  <table *ngIf="items.length > 0" class="checkout-table">
+    <thead>
+      <tr>
+        <th>Product</th>
+        <th>Qty</th>
+        <th>Price</th>
+        <th>Subtotal</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of items">
+        <td>{{ item.title }}</td>
+        <td>{{ item.quantity }}</td>
+        <td>{{ item.price | currency }}</td>
+        <td>{{ item.price * item.quantity | currency }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div *ngIf="items.length > 0">
+    <h3>Total: {{ total$ | async | currency }}</h3>
+    <button (click)="placeOrder(items)" [disabled]="loading$ | async">
+      <span *ngIf="!(loading$ | async)">Place Order</span>
+      <span *ngIf="loading$ | async">Placing Order...</span>
+    </button>
+
+  </div>
+
+  <div *ngIf="success$ | async">
+    Order confirmed! Your order ID is {{ orderId$ | async }}.
+  </div>
+
+  <div *ngIf="error$ | async as error">
+    Failed to place order: {{ error }}
+  </div>
+</div>

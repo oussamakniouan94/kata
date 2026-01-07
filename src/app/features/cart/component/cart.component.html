@@ -1,0 +1,40 @@
+<div *ngIf="items$ | async as items">
+  <h2>Your Cart</h2>
+
+  <div *ngIf="items.length === 0">Your cart is empty.</div>
+
+  <table *ngIf="items.length > 0" class="cart-table">
+    <thead>
+      <tr>
+        <th>Product</th>
+        <th>Quantity</th>
+        <th>Price</th>
+        <th>Subtotal</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of items">
+        <td>
+          <img [src]="item.image" alt="{{ item.title }}" width="50">
+          {{ item.title }}
+        </td>
+        <td>{{ item.quantity }}</td>
+        <td>{{ item.price | currency }}</td>
+        <td>{{ item.price * item.quantity | currency }}</td>
+        <td>
+          <button class="qty-btn" (click)="incrementQuantity(item.id)">+</button>
+          <button class="qty-btn" (click)="decrementQuantity(item.id)">-</button>
+          <button class="remove-btn" (click)="removeItem(item.id)">Remove</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div *ngIf="items.length > 0">
+    <h3>Total: {{ total$ | async | currency }}</h3>
+    <button (click)="clearCart()">Clear Cart</button>
+    <button class="checkout-btn" (click)="proceedToCheckout()">Checkout</button>
+    <button class="continue-btn" (click)="proceedToProducts()">Continue Shopping</button>
+  </div>
+</div>
