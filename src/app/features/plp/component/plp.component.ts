@@ -16,8 +16,9 @@ export class PlpComponent implements OnInit {
   products$!: Observable<Product[]>;
   loading$!: Observable<boolean>;
   error$!: Observable<any>;
+  columns = 4;
 
-  constructor(private store: Store, private toastr: ToastrService) {}
+  constructor(private store: Store, private toastr: ToastrService) { }
 
   ngOnInit(): void {
     this.products$ = this.store.select(selectAllProducts);
@@ -30,5 +31,13 @@ export class PlpComponent implements OnInit {
   addToCart(product: Product): void {
     this.store.dispatch(CartActions.addItemOptimistic({ product }));
     this.toastr.success('Your product has been added to the cart!');
+  }
+
+  chunkProducts(products: any[], size: number) {
+    const rows = [];
+    for (let i = 0; i < products.length; i += size) {
+      rows.push(products.slice(i, i + size));
+    }
+    return rows;
   }
 }

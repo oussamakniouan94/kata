@@ -4,7 +4,7 @@ import { RouterModule } from '@angular/router';
 
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
-
+import { ScrollingModule } from '@angular/cdk/scrolling';
 import { PlpComponent } from './component/plp.component';
 import { productsReducer } from './state/products.reducer';
 import { ProductsEffects } from './state/products.effects';
@@ -17,7 +17,8 @@ import { ToastrModule } from 'ngx-toastr';
     RouterModule.forChild([{ path: '', component: PlpComponent }]),
     StoreModule.forFeature('products', productsReducer),
     EffectsModule.forFeature([ProductsEffects]),
-    ToastrModule
+    ToastrModule,
+    ScrollingModule
   ],
 })
 export class PlpModule {}
