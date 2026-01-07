@@ -16,19 +16,37 @@ export const initialState: ProductsState = {
 
 export const productsReducer = createReducer(
   initialState,
-  on(ProductsActions.loadProducts, state => ({
+
+  on(ProductsActions.loadProducts, (state) => ({
     ...state,
     loading: true,
     error: null,
   })),
+
   on(ProductsActions.loadProductsSuccess, (state, { products }) => ({
     ...state,
     products,
     loading: false,
   })),
+
   on(ProductsActions.loadProductsFailure, (state, { error }) => ({
     ...state,
     loading: false,
     error,
+  })),
+
+  on(ProductsActions.rateProductSuccess, (state, { productId, rate, count }) => ({
+    ...state,
+    products: state.products.map((p) =>
+      p.id === productId
+        ? {
+            ...p,
+            rating: {
+              rate,
+              count: count ?? p.rating?.count ?? 0,
+            },
+          }
+        : p
+    ),
   }))
 );

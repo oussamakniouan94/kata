@@ -21,7 +21,7 @@ export class ProductsEffects {
     private http: HttpClient,
     private transferState: TransferState,
     private toastr: ToastrService,
-    @Inject(PLATFORM_ID) private platformId: Object
+    @Inject(PLATFORM_ID) private platformId: Object,
   ) {}
 
   loadProducts$ = createEffect(() =>
@@ -41,6 +41,16 @@ export class ProductsEffects {
           }),
           catchError((error) => of(ProductsActions.loadProductsFailure({ error })))
         );
+      })
+    )
+  );
+
+  rateProduct$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(ProductsActions.rateProduct),
+      mergeMap(({ productId, userRate, incrementCount }) => {
+        const count = incrementCount ? undefined : undefined;
+        return of(ProductsActions.rateProductSuccess({ productId, rate: userRate, count }));
       })
     )
   );
@@ -65,6 +75,19 @@ export class ProductsEffects {
         tap(({ error }) => {
           if (isPlatformBrowser(this.platformId)) {
             this.toastr.error('Failed to load products. Please try again.', 'Error');
+          }
+        })
+      ),
+    { dispatch: false }
+  );
+
+  rateProductToast$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(ProductsActions.rateProductSuccess),
+        tap(() => {
+          if (isPlatformBrowser(this.platformId)) {
+            this.toastr.success('Thanks for your rating!');
           }
         })
       ),

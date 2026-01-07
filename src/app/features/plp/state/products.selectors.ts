@@ -17,3 +17,9 @@ export const selectProductsError = createSelector(
   selectProductsState,
   (state: ProductsState) => state.error
 );
+
+export const selectProductById = (id: number) =>
+  createSelector(selectAllProducts, (products) => products.find((p) => p.id === id));
+
+export const selectProductRating = (id: number) =>
+  createSelector(selectProductById(id), (p) => p?.rating ?? { rate: 0, count: 0 });
