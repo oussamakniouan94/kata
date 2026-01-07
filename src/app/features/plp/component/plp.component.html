@@ -1,27 +1,40 @@
 <h2 class="page-title">Products</h2>
 
-<input type="text" [formControl]="searchControl" placeholder="Search products..." class="search-input" />
+<label for="search" class="sr-only">Search products</label>
+<input id="search" type="text" [formControl]="searchControl" placeholder="Search products..." class="search-input"
+  [attr.aria-label]="'Search products'" />
 
-<div *ngIf="loading$ | async" class="state">Loading...</div>
-<div *ngIf="error$ | async as error" class="state error">
+<div *ngIf="loading$ | async" class="state" role="status">Loading...</div>
+<div *ngIf="error$ | async as error" class="state error" role="alert">
   Error: {{ error }}
 </div>
 
-<cdk-virtual-scroll-viewport class="viewport" itemSize="460" *ngIf="filteredRows$ | async as rows">
+<cdk-virtual-scroll-viewport class="viewport" itemSize="460" *ngIf="filteredRows$ | async as rows" role="list"
+  [attr.aria-label]="'Product list'">
   <div class="product-row" *cdkVirtualFor="let row of rows">
-    <div class="product-card" *ngFor="let product of row">
-      <img [src]="product.image" [alt]="product.title" />
+    <div class="product-card" *ngFor="let product of row" role="listitem" tabindex="0"
+      [attr.aria-label]="product.title + ' priced at ' + (product.price | currency)">
+      <img [src]="product.image" [alt]="product.title" class="product-image" role="img"
+        [attr.aria-label]="product.title" />
+
       <h3>{{ product.title }}</h3>
       <p class="price">{{ product.price | currency }}</p>
 
-      <div class="rating">
+      <div class="rating" role="group"
+        [attr.aria-label]="product.rating.rate + ' out of 5 stars with ' + product.rating.count + ' reviews'">
         <ng-container *ngFor="let star of [1,2,3,4,5]">
-          <span class="star" [class.filled]="star <= product.rating.rate">★</span>
+          <span class="star" [class.filled]="star <= product.rating.rate" aria-hidden="true">
+            ★
+          </span>
         </ng-container>
-        <span class="rating-value">{{ product.rating.rate }} / 5 ({{ product.rating.count }})</span>
+        <span class="rating-value">
+          {{ product.rating.rate }} out of 5 stars ({{ product.rating.count }} reviews)
+        </span>
       </div>
 
-      <button (click)="addToCart(product)">Add to Cart</button>
+      <button (click)="addToCart(product)" [attr.aria-label]="'Add ' + product.title + ' to cart'">
+        Add to Cart
+      </button>
     </div>
   </div>
 </cdk-virtual-scroll-viewport>

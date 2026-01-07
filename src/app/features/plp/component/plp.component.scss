@@ -26,7 +26,7 @@
 }
 
 .product-card {
-  height: 420px;
+  height: 500px;
   background: #ffffff;
   border-radius: 16px;
   padding: 1.6rem;
@@ -54,7 +54,7 @@
   font-size: 1.05rem;
   font-weight: 600;
   line-height: 1.4;
-  height: 3rem;
+  height: 10rem;
   overflow: hidden;
   margin: 0.75rem 0;
 }
@@ -137,4 +137,20 @@ button:hover {
   color: #000;
   padding: 0 2px;
   border-radius: 2px;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+
+.product-card:focus {
+  box-shadow: 0 0 0 3px #1976d2;
+  border-radius: 16px;
 }
