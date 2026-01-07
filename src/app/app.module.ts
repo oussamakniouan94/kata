@@ -1,45 +1,65 @@
 import { NgModule, PLATFORM_ID } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { AppRoutingModule } from './app-routing.module';
-import { AppComponent } from './app.component';
-import { LayoutModule } from './shared/layout/layout.module';
-import { ToastrModule } from 'ngx-toastr';
+import { RouterModule } from '@angular/router';
 
-import { META_REDUCERS, StoreModule } from '@ngrx/store';
+import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
-import { cartReducer } from './features/cart/state/cart.reducer';
-import { CartEffects } from './features/cart/state/cart.effects';
-import { OrderEffects } from './features/checkout/state/order.effects';
-import { ProductsEffects } from './features/plp/state/products.effects';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+
+import { AppComponent } from './app.component';
+import { reducers } from './state/app.reducer';
 import { storageMetaReducer } from './features/cart/state/storage.metareducer';
+import { LayoutModule } from './shared/layout/layout.module';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ToastrModule } from 'ngx-toastr';
 
 @NgModule({
   declarations: [AppComponent],
-  providers: [
-    
-  ],
   imports: [
-    BrowserModule,
-    AppRoutingModule,
+    BrowserAnimationsModule,
+    BrowserModule.withServerTransition({ appId: 'serverApp' }),
     HttpClientModule,
     LayoutModule,
-    BrowserAnimationsModule,
-    ToastrModule.forRoot({
-      positionClass: 'toast-bottom-right',
-      timeOut: 3000,
-      preventDuplicates: true,
+    ToastrModule.forRoot({ 
+      positionClass: 'toast-bottom-right', 
+      preventDuplicates: true, 
     }),
-
-    StoreModule.forRoot({ cart: cartReducer }),
-    EffectsModule.forRoot([CartEffects, OrderEffects, ProductsEffects]),
-    StoreModule.forRoot({}, { metaReducers: [] })
+    RouterModule.forRoot([
+      { path: '', redirectTo: 'products', pathMatch: 'full' },
+      {
+        path: 'products',
+        loadChildren: () =>
+          import('./features/plp/plp.module').then((m) => m.PlpModule),
+      },
+      {
+        path: 'cart',
+        loadChildren: () =>
+          import('./features/cart/cart.module').then((m) => m.CartModule),
+      },
+      {
+        path: 'checkout',
+        loadChildren: () =>
+          import('./features/checkout/checkout.module').then(
+            (m) => m.CheckoutModule
+          ),
+      },
+      {
+        path: 'order-confirmation',
+        loadChildren: () =>
+          import('./features/order-confirmation/order-confirmation.module').then(
+            (m) => m.OrderConfirmationModule
+          ),
+      },
+    ]),
+    StoreModule.forRoot(reducers, {
+      metaReducers: [
+        (reducer) => storageMetaReducer(reducer, PLATFORM_ID),
+      ],
+    }),
+    EffectsModule.forRoot([]),
+    StoreDevtoolsModule.instrument({ maxAge: 25 }),
   ],
   bootstrap: [AppComponent],
 })
 export class AppModule { }
-
-function storageMetaReducerFactory(platformId: Object) {
-  throw new Error('Function not implemented.');
-}

@@ -8,6 +8,7 @@ import { EffectsModule } from '@ngrx/effects';
 import { PlpComponent } from './component/plp.component';
 import { productsReducer } from './state/products.reducer';
 import { ProductsEffects } from './state/products.effects';
+import { ToastrModule } from 'ngx-toastr';
 
 @NgModule({
   declarations: [PlpComponent],
@@ -16,6 +17,7 @@ import { ProductsEffects } from './state/products.effects';
     RouterModule.forChild([{ path: '', component: PlpComponent }]),
     StoreModule.forFeature('products', productsReducer),
     EffectsModule.forFeature([ProductsEffects]),
+    ToastrModule
   ],
 })
 export class PlpModule {}
